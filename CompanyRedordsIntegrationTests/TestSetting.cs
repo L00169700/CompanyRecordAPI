@@ -15,95 +15,95 @@ using System.Text;
 
 namespace CompanyRedordsIntegrationTests
 {
-    public class TestSetting<TStartup> : IDisposable
+    public class TestSetting<TStartup> /*: IDisposable*/
     {
-        public static string GetProjectPath(string projectRelativePath, Assembly startupAssembly)
-        {
-            var projectName = startupAssembly.GetName().Name;
+        //public static string GetProjectPath(string projectRelativePath, Assembly startupAssembly)
+        //{
+        //    var projectName = startupAssembly.GetName().Name;
 
-            var applicationBasePath = AppContext.BaseDirectory;
+        //    var applicationBasePath = AppContext.BaseDirectory;
 
-            var directoryInfo = new DirectoryInfo(applicationBasePath);
+        //    var directoryInfo = new DirectoryInfo(applicationBasePath);
 
-            do
-            {
-                directoryInfo = directoryInfo.Parent;
+        //    do
+        //    {
+        //        directoryInfo = directoryInfo.Parent;
 
-                var projectDirectoryInfo = new DirectoryInfo(Path.Combine(directoryInfo.FullName, projectRelativePath));
+        //        var projectDirectoryInfo = new DirectoryInfo(Path.Combine(directoryInfo.FullName, projectRelativePath));
 
-                if (projectDirectoryInfo.Exists)
-                    if (new FileInfo(Path.Combine(projectDirectoryInfo.FullName, projectName, $"{projectName}.csproj")).Exists)
-                        return Path.Combine(projectDirectoryInfo.FullName, projectName);
-            }
-            while (directoryInfo.Parent != null);
+        //        if (projectDirectoryInfo.Exists)
+        //            if (new FileInfo(Path.Combine(projectDirectoryInfo.FullName, projectName, $"{projectName}.csproj")).Exists)
+        //                return Path.Combine(projectDirectoryInfo.FullName, projectName);
+        //    }
+        //    while (directoryInfo.Parent != null);
 
-            throw new Exception($"Project root could not be located using the application root {applicationBasePath}.");
-        }
+        //    throw new Exception($"Project root could not be located using the application root {applicationBasePath}.");
+        //}
 
-        private TestServer Server;
+        //private TestServer Server;
 
-        public TestSetting()
-            : this(Path.Combine(""))
-        {
-        }
+        //public TestSetting()
+        //    : this(Path.Combine(""))
+        //{
+        //}
 
-        public HttpClient Client { get; }
+        //public HttpClient Client { get; }
 
-        public void Dispose()
-        {
-            Client.Dispose();
-            Server.Dispose();
-        }
+        //public void Dispose()
+        //{
+        //    Client.Dispose();
+        //    Server.Dispose();
+        //}
 
-        protected virtual void InitializeServices(IServiceCollection services)
-        {
-            var startupAssembly = typeof(TStartup).GetTypeInfo().Assembly;
+        //protected virtual void InitializeServices(IServiceCollection services)
+        //{
+        //    var startupAssembly = typeof(TStartup).GetTypeInfo().Assembly;
 
-            var manager = new ApplicationPartManager
-            {
-                ApplicationParts =
-                {
-                    new AssemblyPart(startupAssembly)
-                },
-                FeatureProviders =
-                {
-                    new ControllerFeatureProvider(),
-                    new ViewComponentFeatureProvider()
-                }
-            };
+        //    var manager = new ApplicationPartManager
+        //    {
+        //        ApplicationParts =
+        //        {
+        //            new AssemblyPart(startupAssembly)
+        //        },
+        //        FeatureProviders =
+        //        {
+        //            new ControllerFeatureProvider(),
+        //            new ViewComponentFeatureProvider()
+        //        }
+        //    };
 
-            services.AddSingleton(manager);
-        }
+        //    services.AddSingleton(manager);
+        //}
 
-        protected TestSetting(string relativeTargetProjectParentDir)
-        {
-            var startupAssembly = typeof(TStartup).GetTypeInfo().Assembly;
-            var contentRoot = GetProjectPath(relativeTargetProjectParentDir, startupAssembly);
+        //protected TestSetting(string relativeTargetProjectParentDir)
+        //{
+        //    var startupAssembly = typeof(TStartup).GetTypeInfo().Assembly;
+        //    var contentRoot = GetProjectPath(relativeTargetProjectParentDir, startupAssembly);
 
-            var configurationBuilder = new ConfigurationBuilder()
-                .SetBasePath(contentRoot)
-                .AddJsonFile("appsettings.json");
+        //    var configurationBuilder = new ConfigurationBuilder()
+        //        .SetBasePath(contentRoot)
+        //        .AddJsonFile("appsettings.json");
 
-            var webHostBuilder = new WebHostBuilder()
-                .UseContentRoot(contentRoot)
-                .ConfigureServices(InitializeServices)
-                .UseConfiguration(configurationBuilder.Build())
-                .UseEnvironment("Development")
-                .UseStartup(typeof(TStartup));
+        //    var webHostBuilder = new WebHostBuilder()
+        //        .UseContentRoot(contentRoot)
+        //        .ConfigureServices(InitializeServices)
+        //        .UseConfiguration(configurationBuilder.Build())
+        //        .UseEnvironment("Development")
+        //        .UseStartup(typeof(TStartup));
 
-            // Create instance of test server
-            Server = new TestServer(webHostBuilder);
+        //    // Create instance of test server
+        //    Server = new TestServer(webHostBuilder);
 
-            // Add configuration for client
-            Client = Server.CreateClient();
-            Client.BaseAddress = new Uri("http://localhost:5001");
-            Client.DefaultRequestHeaders.Accept.Clear();
-            Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        }
+        //    // Add configuration for client
+        //    Client = Server.CreateClient();
+        //    Client.BaseAddress = new Uri("http://localhost:5001");
+        //    Client.DefaultRequestHeaders.Accept.Clear();
+        //    Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        //}
     }
     public static class ContentHelper
     {
-        public static StringContent GetStringContent(object obj)
-            => new StringContent(JsonConvert.SerializeObject(obj), Encoding.Default, "application/json");
+        //public static StringContent GetStringContent(object obj)
+        //    => new StringContent(JsonConvert.SerializeObject(obj), Encoding.Default, "application/json");
     }
 }
